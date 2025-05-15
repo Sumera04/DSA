@@ -14,30 +14,40 @@
  * }
  */
 class Solution {
+    // BFS implementation
     public boolean isSymmetric(TreeNode root) {
-        // A tree is symmetric if its left and right subtrees are mirror images
-        return helper(root.left, root.right);
-    }
-
-    private boolean helper(TreeNode p, TreeNode q) {
-        // If both nodes are null, this part of the tree is symmetric
-        if (p == null && q == null)
-            return true;
-
-        // If only one of the nodes is null, the tree is not symmetric
-        if (p == null || q == null)
+        // An empty tree is considered symmetric
+        if (root == null)
             return false;
 
-        // Check if the current node values are equal
-        // and the left subtree of p mirrors the right subtree of q
-        // and the right subtree of p mirrors the left subtree of q
-        if (p.val == q.val &&
-                helper(p.left, q.right) &&
-                helper(p.right, q.left))
-            return true;
+        // Use a queue to compare nodes in pairs
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root.left);
+        queue.offer(root.right);
 
-        // If values don't match or subtrees aren't mirror images
-        return false;
+        while (!queue.isEmpty()) {
+            // Take two nodes to compare
+            TreeNode p = queue.poll();
+            TreeNode q = queue.poll();
+
+            // If both nodes are null, this pair is symmetric; continue
+            if (p == null && q == null)
+                continue;
+
+            // If only one is null or values differ, tree is not symmetric
+            if (p == null || q == null || p.val != q.val)
+                return false;
+
+            // Add the next set of nodes to compare
+            // Mirror check: left with right and right with left
+            queue.offer(p.left);
+            queue.offer(q.right);
+
+            queue.offer(p.right);
+            queue.offer(q.left);
+        }
+
+        // All pairs matched symmetrically
+        return true;
     }
-
 }
