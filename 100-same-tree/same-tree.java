@@ -14,22 +14,38 @@
  * }
  */
 class Solution {
+    // BFS implementation
     public boolean isSameTree(TreeNode p, TreeNode q) {
-        // If both nodes are null, trees are identical at this point
-        if (p == null && q == null)
-            return true;
+        // Initialize a queue to hold node pairs from both trees
+        Queue<TreeNode> queue = new LinkedList<>();
 
-        // If one of the nodes is null and the other is not, trees are not identical
-        if (p == null || q == null)
-            return false;
+        // Add the root nodes of both trees to the queue
+        queue.offer(p);
+        queue.offer(q);
 
-        // Check if current node values are equal and recurse on left and right subtrees
-        if (p.val == q.val &&
-                isSameTree(p.left, q.left) &&
-                isSameTree(p.right, q.right))
-            return true;
+        while (!queue.isEmpty()) {
+            // Remove two nodes to compare
+            TreeNode left = queue.poll();
+            TreeNode right = queue.poll();
 
-        // If values don't match or subtrees aren't identical
-        return false;
+            // If both nodes are null, continue to the next pair
+            if (left == null && right == null)
+                continue;
+
+            // If only one is null or values differ, trees are not the same
+            if (left == null || right == null || left.val != right.val)
+                return false;
+
+            // Enqueue the left children of both nodes
+            queue.offer(left.left);
+            queue.offer(right.left);
+
+            // Enqueue the right children of both nodes
+            queue.offer(left.right);
+            queue.offer(right.right);
+        }
+
+        // All nodes matched correctly
+        return true;
     }
 }
