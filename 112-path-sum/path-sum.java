@@ -13,28 +13,39 @@
  *     }
  * }
  */
-/**
- * \U0001f4a1 Approach (DFS - Recursive):
- * - Subtract the current node’s value from `targetSum`.
- * - Recursively check the left and right subtrees.
- * - If a leaf node is reached and the remaining sum is zero, return true.
- *
- * Time Complexity: O(n) — visit each node once.
- * Space Complexity: O(h) — recursion stack (h = height of the tree).
- */
 
+/*
+Approach:
+- Use Depth-First Search (DFS) to traverse the tree.
+- Keep track of the cumulative sum (`currentSum`) from root to the current node.
+- When a leaf node is reached, check if the `currentSum` equals `targetSum`.
+
+Time Complexity: O(n)
+- In the worst case, every node in the tree is visited once.
+
+Space Complexity: O(h)
+- h = height of the tree (due to recursive call stack).
+- Worst case: O(n) for a skewed tree; O(log n) for a balanced tree.
+*/
 class Solution {
     public boolean hasPathSum(TreeNode root, int targetSum) {
-        // Base case: if tree is empty, there is no path
+        return helper(root, targetSum, 0);
+    }
+
+    // Recursive helper method to perform DFS while keeping track of the current sum
+    private boolean helper(TreeNode root, int targetSum, int currentSum) {
         if (root == null)
             return false;
 
-        // If the current node is a leaf and its value equals the remaining targetSum
-        if (root.left == null && root.right == null && root.val == targetSum)
-            return true;
+        // Add the current node's value to the running sum
+        currentSum += root.val;
 
-        // Recursively check left and right subtrees with updated targetSum
-        return hasPathSum(root.left, targetSum - root.val) ||
-               hasPathSum(root.right, targetSum - root.val);
+        // If it's a leaf node, check if the path sum matches the target
+        if (root.left == null && root.right == null)
+            return targetSum == currentSum;
+
+        // Recursively check the left and right subtrees
+        return helper(root.left, targetSum, currentSum) ||
+                helper(root.right, targetSum, currentSum);
     }
 }
