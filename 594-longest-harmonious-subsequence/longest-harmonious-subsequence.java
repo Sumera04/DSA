@@ -1,39 +1,28 @@
 /**
- * Problem: Longest Harmonious Subsequence (LHS)
- *
  * Approach:
- * - Use a HashMap to count the frequency of each number in the array.
- * - For each unique number `num`, check if either `num + 1` or `num - 1` exists in the map.
- * - If yes, the harmonious subsequence can include both `num` and `num ± 1`.
- * - Update the maximum length found so far using the sum of their frequencies.
+ * - Sort the array to group the same numbers and bring adjacent numbers together.
+ * - Use two pointers to keep track of a window where the difference between max and min is 1.
+ * - If the difference is more than 1, shrink the window.
+ * - When the difference is exactly 1, update maxLength with window size.
  *
- * Note:
- * - We only need to check keys in the map (not all elements in the array),
- *   to avoid redundant calculations.
- *
- * Time Complexity: O(n)
- * - One pass to build the map, and another to iterate over keys.
- *
- * Space Complexity: O(n)
- * - Storing frequencies of each element in the map.
+ * Time Complexity: O(n log n) - due to sorting
+ * Space Complexity: O(1) - no extra space used
  */
 class Solution {
     public int findLHS(int[] nums) {
-        Map<Integer, Integer> map = new HashMap<>();
-
-        // Count frequency of each number
-        for (int num : nums) {
-            map.put(num, map.getOrDefault(num, 0) + 1);
-        }
-
+        Arrays.sort(nums);
+        int start = 0;
         int maxLength = 0;
 
-        // Iterate over the unique keys
-        for (int num : map.keySet()) {
-            // Check for adjacent value (num + 1)
-            if (map.containsKey(num + 1)) {
-                int currentLength = map.get(num) + map.get(num + 1);
-                maxLength = Math.max(maxLength, currentLength);
+        for (int end = 0; end < nums.length; end++) {
+            // Shrink window if difference is more than 1
+            while (nums[end] - nums[start] > 1) {
+                start++;
+            }
+
+            // If exactly 1, update max length
+            if (nums[end] - nums[start] == 1) {
+                maxLength = Math.max(maxLength, end - start + 1);
             }
         }
 
