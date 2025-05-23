@@ -1,38 +1,31 @@
 /**
  * Approach:
- * - We use a HashSet to keep track of the numbers we've seen so far.
- * - As we iterate through the input array:
- *     - If a number is already in the set, we immediately return true (duplicate found).
- *     - Otherwise, we add the number to the set.
- * - If we reach the end of the array without finding any duplicates, we return false.
+ * - Sort the array first. If there are any duplicates, they will appear consecutively.
+ * - After sorting, iterate through the array and compare each element to its previous one.
+ *   - If any two consecutive elements are equal, return true (duplicate found).
+ *   - If the loop completes without finding duplicates, return false.
  *
- * Time Complexity: O(n)
- * - Where n is the number of elements in the array.
- * - We perform a single pass through the array and each set operation (add, contains) is O(1) on average.
+ * Time Complexity: O(n log n)
+ * - The sorting step takes O(n log n) time.
+ * - The linear scan afterward takes O(n) time.
+ * - Total time is dominated by the sorting step: O(n log n).
  *
- * Space Complexity: O(n)
- * - In the worst case, we store all n elements in the HashSet (if no duplicates are present).
+ * Space Complexity: O(1) if sorting in-place (e.g., using Arrays.sort).
+ * - If a non-in-place sorting algorithm is used internally, the space complexity could be O(n).
  */
-
-import java.util.HashSet;
-import java.util.Set;
-
 class Solution {
     public boolean containsDuplicate(int[] nums) {
-        // Initialize a HashSet to store unique elements
-        Set<Integer> set = new HashSet<Integer>();
+        // Sort the array to bring duplicates next to each other
+        Arrays.sort(nums);
 
-        // Iterate through each number in the array
-        for (int num : nums) {
-            // If the number is already in the set, a duplicate exists
-            if (set.contains(num)) {
-                return true;
+        // Check for any two consecutive elements being equal
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i - 1] == nums[i]) {
+                return true; // Duplicate found
             }
-            // Otherwise, add the number to the set
-            set.add(num);
         }
 
-        // No duplicates were found
+        // No duplicates found
         return false;
     }
 }
