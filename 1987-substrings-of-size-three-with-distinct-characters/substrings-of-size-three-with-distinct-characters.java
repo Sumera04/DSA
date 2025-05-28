@@ -1,28 +1,36 @@
 /*
 Approach:
-We iterate through the string using a fixed-size sliding window of length 3.
-For each window (i, i+1, i+2), we directly compare the three characters.
-If all three characters are distinct, we increment the count.
-This avoids using extra data structures like a HashSet, making the solution more efficient.
+We iterate over the input string and use a sliding window approach to check all possible substrings of length 3.
+We use a HashSet to track the characters in the current window.
+If we encounter a duplicate or the size of the set reaches 3, we check whether it's a valid "good" substring (all unique characters).
+If it's good, we increment the count and slide the window accordingly.
 
-Time Complexity: O(n), where n is the length of the string.
-Space Complexity: O(1), as we use only a few integer/char variables.
+Time Complexity: O(n), where n is the length of the string. In the worst case, each character is visited once.
+Space Complexity: O(1), as the HashSet stores at most 3 characters at any time.
 */
 
 class Solution {
     public int countGoodSubstrings(String s) {
-        int count = 0; // Initialize the counter for good substrings
-        char[] arr = s.toCharArray(); // Convert the string to a character array for fast access
+        int count = 0; // To store the count of good substrings
+        int start = 0; // Start index of the current window
 
-        // Loop until the third-last character to avoid index out of bounds
-        for (int i = 0; i < arr.length - 2; i++) {
-            char a = arr[i];       // First character in the window
-            char b = arr[i + 1];   // Second character in the window
-            char c = arr[i + 2];   // Third character in the window
+        Set<Character> set = new HashSet<>(); // Set to track unique characters in the window
+        char[] arr = s.toCharArray(); // Convert the string to a char array for faster access
 
-            // Check if all three characters are distinct
-            if (a != b && b != c && c != a)
-                count++; // It's a good substring, increment count
+        for (int i = 0; i < arr.length; i++) {
+            // If set already has 3 characters or contains a duplicate
+            if (set.size() == 3 || set.contains(arr[i])) {
+                set.clear(); // Clear the set to reset the window
+                start++; // Move the start index of the window
+                i = start - 1; // Reset the loop index to start - 1 (i will be incremented in next iteration)
+                continue; // Skip to the next iteration
+            }
+
+            set.add(arr[i]); // Add the current character to the set
+
+            if (set.size() == 3) {
+                count++; // If the set size is 3, it means we have a good substring
+            }
         }
 
         return count; // Return the total number of good substrings
