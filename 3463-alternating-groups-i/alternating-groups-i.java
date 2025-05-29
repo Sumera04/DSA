@@ -1,13 +1,17 @@
 class Solution {
     public int numberOfAlternatingGroups(int[] colors) {
-        int count = 0, n = colors.length;
+        int n = colors.length;
+        int count = 0;
 
+        // We treat the array as circular, so we iterate n times
         for (int i = 0; i < n; i++) {
-            int prev = colors[(i - 1 + n) % n];
-            int next = colors[(i + 1) % n];
+            // Get 3 consecutive elements using modular arithmetic
+            int a = colors[i];                      // current
+            int b = colors[(i + 1) % n];            // next
+            int c = colors[(i + 2) % n];            // next-next
 
-            // Check if current tile is different from both neighbors
-            if (colors[i] != prev && colors[i] != next) {
+            // Check if middle is different and ends are equal: [a, b, c] → b ≠ a and b ≠ c, and a == c
+            if (b != a && b != c && a == c) {
                 count++;
             }
         }
