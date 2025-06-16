@@ -1,34 +1,28 @@
-/* Approach:
- * - This problem allows **multiple transactions** (buy and sell as many times as you like),
- *   but you must sell before buying again.
- * - Use a greedy approach:
- *     - Traverse the array from index 1.
- *     - If today's price is greater than yesterday's (i.e., profit opportunity),
- *       add the profit to totalProfit.
- *     - Update minVal to current price regardless, since a new buying point starts each day.
- * - This way, we sum all the positive price differences, which simulates buying low and selling high repeatedly.
+/* 
+ * Approach:
+ * - This is a greedy solution.
+ * - You are allowed to buy and sell multiple times (but must sell before buying again).
+ * - The idea is to capture **all upward price movements**.
+ * - Traverse the prices array from day 1:
+ *     - If today's price is greater than yesterday's, we "buy yesterday and sell today".
+ *     - Accumulate that profit.
+ * - This guarantees capturing all local profits.
  *
- * Time Complexity: O(n) — Single pass through the array
- * Space Complexity: O(1) — Constant extra space used
+ * Time Complexity: O(n) – Single traversal of the array
+ * Space Complexity: O(1) – No extra space used
  */
-
 class Solution {
     public int maxProfit(int[] prices) {
-        int minVal = prices[0];      // Current buying price
-        int totalProfit = 0;         // Accumulated profit
+        int totalProfit = 0;
 
+        // Loop through prices starting from day 1
         for (int i = 1; i < prices.length; i++) {
-            if (prices[i] > minVal) {
-                // Profit opportunity: buy at minVal, sell at current price
-                totalProfit += prices[i] - minVal;
-                // Update minVal to current price for next transaction
-                minVal = prices[i];
-            } else {
-                // New lower price found — update minVal to buy cheaper
-                minVal = prices[i];
+            // If price increased from previous day, add the profit
+            if (prices[i] > prices[i - 1]) {
+                totalProfit += prices[i] - prices[i - 1];
             }
         }
 
-        return totalProfit;
+        return totalProfit; // Total profit from all profitable transactions
     }
 }
